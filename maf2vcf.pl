@@ -197,16 +197,16 @@ while( my $line = $maf_fh->getline ) {
     $filter = "." if( !defined $filter or $filter eq "" );
 
     # If normal alleles are unset in the MAF (quite common), assume homozygous reference
-    $n_al1 = $ref if( $n_al1 eq "" );
-    $n_al2 = $ref if( $n_al2 eq "" );
+    $n_al1 = $ref if( $n_al1 eq "" or $n_al1 eq 0 );
+    $n_al2 = $ref if( $n_al2 eq "" or $n_al2 eq 0 );
 
     # Make sure we have at least one variant allele. If not, die with an error
-    if( $al1 eq "" and $al2 eq "" ) {
+    if(( $al1 eq "" and $al2 eq "" ) or ( $al1 eq 0 and $al2 eq 0 )) {
         die "ERROR: MAF line $line_count has no variant allele specified at $chr:$pos!\n";
     }
     # If one of the variant alleles is unset, assume that it's the same as the reference allele
-    $al1 = $ref if( $al1 eq "" );
-    $al2 = $ref if( $al2 eq "" );
+    $al1 = $ref if( $al1 eq "" or $al1 eq 0 );
+    $al2 = $ref if( $al2 eq "" or $al2 eq 0 );
 
     # When variant alleles are a SNP and a "-", warn user of misusing "-" to denote REF
     if( $al1 ne $ref and $al2 ne $ref and $al1 ne $al2 and ( $al1 eq "-" or $al2 eq "-" ) and
